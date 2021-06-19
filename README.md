@@ -12,6 +12,7 @@ logout postgresql
 ```
 \? help
 \q
+\x : expand mode => date show vertical
 ```
 
 ## database
@@ -303,8 +304,91 @@ ALTER TABLE person ADD constraint check_gender_before_insert CHECK(gender='Femal
 insert into person (first_name, last_name, email, gender, date_of_birth, country) values ('Shirleen', 'Gilogly', 'zzzz@mapquest.com', 'Bigender', '2011-03-03', 'New Zealand');
 ```
 
+## UPDATE always use with where (if not => update entire table > toang)
+```
+UPDATE set email ='nghiahsgs@gmail',first_name ='nghiahsgs' FROM tb_name WHERE id = 1
+```
 
-## DELETE 
+## DELETE always use with where (if not => update entire table > toang)
 ```
 DELETE from person where id = 10;
+```
+
+## ON conflict
+```
+INSERT INTO person(id, first_name, last_name, email, gender, date_of_birth, country)  VALUES(1,'nghia','nguyen','nghiahsgs@gmail.com','Male',DATE'1997-02-06','Vietnam');
+
+it will throw error =>  duplicate key value violates unique constraint "person_pkey"
+```
+
+It will not throw any error and do nothing
+```
+INSERT INTO person(id, first_name, last_name, email, gender, date_of_birth, country)
+VALUES(1,'nghia','nguyen','nghiahsgs@gmail.com','Male',DATE'1997-02-06','Vietnam')
+ON CONFLICT (id) DO NOTHING;
+```
+
+It will not throw any error and do nothing
+```
+INSERT INTO person(first_name, last_name, email, gender, date_of_birth, country)
+VALUES('nghia','nguyen','nghiahsgs@gmail.com','Male',DATE'1997-02-06','Vietnam')
+ON CONFLICT (email) DO NOTHING;
+```
+
+## Upsert (Update or insert). Insert if has nothing, update if has one
+```
+INSERT INTO person(id,first_name, last_name, email, gender, date_of_birth, country)
+VALUES(1008,'nghia','nguyen','nghiahsgs20@gmail.com','Male',DATE'1997-02-06','Vietnam')
+ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;
+```
+
+## One - One relationship
+```sql
+CREATE TABLE person(
+    id BIGSERIAL PRIMARY KEY not null,
+    name VARCHAR(255) not null,
+    age INT not null,
+    car_id BIGINT not null REFERENCES car(id),
+    UNIQUE(car_id)
+);
+CREATE TABLE car(
+    id BIGSERIAL PRIMARY KEY not null,
+    name VARCHAR(255) not null
+);
+```
+
+insert car
+```
+INSERT INTO car(name) VALUES ('honda');
+INSERT INTO car(name) VALUES ('suzuki');
+INSERT INTO car(name) VALUES ('xe dap');
+```
+
+insert person
+```
+INSERT INTO person(name,age,car_id) VALUES ('nghiahsgs',20,1);
+```
+If remove car_id =1 in tablle car => ERROR because car_id = 1 still exitst in table person
+
+## JOIN
+### INNER JOIN, A+B=> C (bwt A and B is foreign key)
+```
+select * FROM person JOIN car ON person.car_id = car.id;
+select person.id,person.name,car.id,car.name as car_name FROM person JOIN car ON person.car_id = car.id;
+```
+### LEFT JOIN, if left table has null foreign key => return all content of this. else => join right table
+```
+select * FROM person LEFT JOIN car ON person.car_id = car.id;
+```
+## Delete foreign key
+Notice: if you want to remove car, u need remove person before hand or update set car_id = ''
+
+## Export result of sql query to csv
+```
+\copy (select * from person) TO '/root/a.csv' DELIMITER ',' CSV HEADER;
+```
+
+## RESTART SEQUENCE
+```
+ALTER SEQUENCE car_id_seq RESTART WITH 10;
 ```
