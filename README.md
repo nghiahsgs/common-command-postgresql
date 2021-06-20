@@ -306,7 +306,7 @@ insert into person (first_name, last_name, email, gender, date_of_birth, country
 
 ## UPDATE always use with where (if not => update entire table > toang)
 ```
-UPDATE set email ='nghiahsgs@gmail',first_name ='nghiahsgs' FROM tb_name WHERE id = 1
+UPDATE tb_name set email ='nghiahsgs@gmail',first_name ='nghiahsgs' WHERE id = 1
 ```
 
 ## DELETE always use with where (if not => update entire table > toang)
