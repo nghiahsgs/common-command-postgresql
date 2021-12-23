@@ -38,7 +38,7 @@ drop database db_name;
 
 ## table
 create new table without constrant
-```
+```sql
 CREATE TABLE person(
     id INT,
     first_name VARCHAR(50),
@@ -48,7 +48,7 @@ CREATE TABLE person(
 );
 ```
 
-```
+```sql
 CREATE TABLE person(
     id BIGSERIAL NOT NULL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
