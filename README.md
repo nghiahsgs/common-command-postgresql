@@ -66,6 +66,14 @@ show all table (d: describe)
 \d person
 ```
 
+
+counter numbers of tables:
+```
+select count(*)
+from information_schema.tables
+where table_schema = 'public';
+```
+
 drop table
 ```
 DROP TABLE tb_name
